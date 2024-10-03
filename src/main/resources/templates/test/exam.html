@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Test Platform</title>
+</head>
+<body>
+<h1>코딩 실전 테스트</h1>
+
+<div id="problem-description">
+    <h2>문제 설명</h2>
+    <p>여기에 문제 설명이 표시됩니다.</p>
+</div>
+
+<div id="code-editor">
+    <h2>코드를 입력하세요</h2>
+    <textarea id="code-area" rows="15" cols="100" placeholder="여기에 코드를 작성하세요"></textarea>
+    <br><br>
+    <label for="language">언어 선택:</label>
+    <select id="language">
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+    </select>
+</div>
+
+<div id="result">
+    <h2>결과</h2>
+    <pre id="execution-result">여기에 결과가 표시됩니다.</pre>
+</div>
+
+<button id="reset-btn">초기화</button>
+<button id="run-btn">코드 실행</button>
+<button id="submit-btn">제출</button>
+
+<script>
+    // 초기화 버튼 기능
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        document.getElementById('code-area').value = '';
+        document.getElementById('execution-result').textContent = '';
+    });
+
+    // 코드 실행 버튼 기능
+    document.getElementById('run-btn').addEventListener('click', () => {
+        const code = document.getElementById('code-area').value;
+        const language = document.getElementById('language').value;
+
+        // AJAX로 서버에 코드 전송
+        fetch('/api/run-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, language }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('execution-result').textContent = data.result;
+        });
+    });
+
+    // 제출 버튼 기능
+    document.getElementById('submit-btn').addEventListener('click', () => {
+        const code = document.getElementById('code-area').value;
+        const language = document.getElementById('language').value;
+
+        // AJAX로 서버에 코드 제출
+        fetch('/api/submit-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, language }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.correct) {
+                alert('정답입니다!');
+            } else {
+                alert('오답입니다.');
+            }
+        });
+    });
+
+     // WebSocket 연결 생성
+    const socket = new WebSocket('ws://localhost:8080/ws/code'); // URL 조정 필요
+
+    // 코드 업데이트를 WebSocket 서버로 전송
+    document.getElementById('code-area').addEventListener('input', () => {
+        const code = document.getElementById('code-area').value;
+        const language = document.getElementById('language').value;
+        const message = JSON.stringify({ code, language });
+        socket.send(message);
+    });
+
+    // 수신된 메시지 처리 (다른 사용자로부터의 코드 업데이트)
+    socket.addEventListener('message', (event) => {
+        const data = JSON.parse(event.data);
+        // 감독 페이지에서 코드 업데이트 표시
+        document.getElementById('code-area').value = data.code;
+    });
+</script>
+</body>
+</html>
