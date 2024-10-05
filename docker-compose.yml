@@ -1,0 +1,14 @@
+version: '3'
+services:
+  java-container:
+    image: java-container-image  # 미리 빌드된 이미지를 사용
+    container_name: java-container
+    stdin_open: true
+    tty: true
+    entrypoint: ["/app/start.sh"]
+
+  python-container:
+    image: python:3.9
+    container_name: python-container
+    stdin_open: true
+    tty: true

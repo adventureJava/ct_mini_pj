@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>감독 페이지</title>
+</head>
+<body>
+<h1>코딩 테스트 감독 페이지</h1>
+
+<div id="code-display">
+  <h2>시험자의 코드</h2>
+  <textarea id="code-area" rows="15" cols="100" readonly></textarea>
+</div>
+
+<script>
+  // WebSocket 연결 생성
+  const socket = new WebSocket('ws://localhostuy:8080/ws/code'); // URL 조정 필요
+
+  // 수신된 메시지 처리 (시험자에게서의 코드 업데이트)
+  socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+      // 감독 페이지에서 코드 업데이트 표시
+      document.getElementById('code-area').value = data.code;
+  });
+</script>
+</body>
+</html>
