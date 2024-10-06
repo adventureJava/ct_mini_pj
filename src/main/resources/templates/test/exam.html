@@ -9,8 +9,8 @@
 <h1>코딩 실전 테스트</h1>
 
 <div id="problem-description">
-    <h2>문제 설명</h2>
-    <p>여기에 문제 설명이 표시됩니다.</p>
+    <h2>1번 문제</h2>
+    <p>hello를 출력하세요!</p>
 </div>
 
 <div id="code-editor">
@@ -35,6 +35,24 @@
 
 <script>
     // 초기화 버튼 기능
+    document.getElementById('language').addEventListener('change', function() {
+    var language = document.getElementById('language').value;
+    var codeArea = document.getElementById('code-area');
+    codeArea.value =``;
+
+    // 선택된 언어가 Java일 때 기본 Java 코드 삽입
+    if (language === 'java') {
+        codeArea.value = `public class Solution {
+    public static void main(String[] args) {
+        // 여기에 코드를 작성하세요
+    }
+}`;
+    } else if (language === 'python') {
+        // 선택된 언어가 Python일 때 기본 Python 코드 삽입
+        codeArea.value = `# 여기에 코드를 작성하세요`;
+    }
+});
+
     document.getElementById('reset-btn').addEventListener('click', () => {
         document.getElementById('code-area').value = '';
         document.getElementById('execution-result').textContent = '';
