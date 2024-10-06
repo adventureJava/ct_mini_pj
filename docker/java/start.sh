@@ -11,6 +11,7 @@ while true; do
         echo "Waiting for Java file..."
         sleep 1
         continue
+
     fi
 
     echo "Java file found. Processing..."

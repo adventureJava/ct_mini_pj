@@ -126,6 +126,47 @@ public class CodeExecutionController {
             output.append(line).append("\n");
         }
 
+        // cat 명령이 완료될 때까지 기다림
+        int resultProcessExitCode = resultProcess.waitFor();
+        if (resultProcessExitCode != 0) {
+            System.err.println("Error reading result file. Process exit code: " + resultProcessExitCode);
+            return "Error reading result file.";
+        }
+
+        // result.txt 파일 삭제
+        ProcessBuilder deleteResultFileBuilder = new ProcessBuilder("docker", "exec", containerName, "rm", resultFileName);
+        Process deleteResultFileProcess = deleteResultFileBuilder.start();
+        int deleteResult = deleteResultFileProcess.waitFor();
+
+        if (deleteResult != 0) {
+            System.err.println("Error deleting result file. Process exit code: " + deleteResult);
+        } else {
+            System.out.println("Result file deleted successfully.");
+        }
+
+        // Java 소스 파일 삭제
+        ProcessBuilder deleteJavaFileBuilder = new ProcessBuilder("docker", "exec", containerName, "rm", javaFileName);
+        Process deleteJavaFileProcess = deleteJavaFileBuilder.start();
+        int deleteJavaResult = deleteJavaFileProcess.waitFor();
+
+        if (deleteJavaResult != 0) {
+            System.err.println("Error deleting Java file. Process exit code: " + deleteJavaResult);
+        } else {
+            System.out.println("Java file deleted successfully.");
+        }
+
+        // 클래스 파일(.class) 삭제
+        String classFileName = basePath + "/" + className + ".class";
+        ProcessBuilder deleteClassFileBuilder = new ProcessBuilder("docker", "exec", containerName, "rm", classFileName);
+        Process deleteClassFileProcess = deleteClassFileBuilder.start();
+        int deleteClassResult = deleteClassFileProcess.waitFor();
+
+        if (deleteClassResult != 0) {
+            System.err.println("Error deleting class file. Process exit code: " + deleteClassResult);
+        } else {
+            System.out.println("Class file deleted successfully.");
+        }
+
         // 임시 파일 삭제
         Files.delete(tempFile);
 
