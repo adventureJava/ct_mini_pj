@@ -16,7 +16,12 @@ import java.util.Date;
 public class TestBoard {
     @Id
     @Column(unique = true)
-    private String tId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_board_seq")
+    @SequenceGenerator(name = "test_board_seq", sequenceName = "test_board_sequence", allocationSize = 1)
+    private Integer tId;
+
+    @Column(nullable = false)
+    private Integer level;
 
     @Column(nullable = false, length = 255)
     private String tTitle;
