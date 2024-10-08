@@ -40,8 +40,5 @@ public class MoveController {
         return "admin/supervise";
     }
 
-    @GetMapping("/product")
-    public String product() {
-        return "shop/product";
-    }
+
 }
