@@ -5,29 +5,10 @@
     <meta charset="UTF-8">
     <title>로그인</title>
     <style>
-    .top-bar {
-    background-color: #071313;
-    color: #fff;
-    line-height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.logo {
-    margin: 4px;
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-}
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f7f7f7;
-        }
+
         .container {
             max-width: 400px;
-            margin: 0 auto;
+            margin: 10px auto;
             padding: 20px;
             background-color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -41,14 +22,14 @@
             display: block;
             margin-bottom: 8px;
         }
-        input {
+        #loginForm input {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        button {
+        #loginbtn {
             width: 100%;
             padding: 10px;
             background-color: blue;
@@ -57,13 +38,23 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
+        #loginbtn:hover {
             background-color: #45a049;
+        }
+        #join {
+            width: 100%;
+            margin-top:10px;
+            padding: 10px;
+            background-color: gray;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<th:block th:insert="~{fragments::header('코딩테스트 사이트')}"></th:block>
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
 <div class="container">
     <h1>로그인</h1>
     <form id="loginForm">
@@ -73,11 +64,17 @@
         <label for="pw">비밀번호:</label>
         <input type="password" id="pw" name="pw" required>
 
-        <button type="submit">Login</button>
+        <button type="submit" id="loginbtn">Login</button>
     </form>
+    <button type="button" id="join">회원가입</button>
+
 </div>
 
 <script>
+    document.getElementById("join").addEventListener("click", function() {
+        window.location.href = "join";
+    })
+
     document.getElementById("loginForm").addEventListener("submit", async function(event) {
         event.preventDefault(); // 기본 폼 제출 방지
 

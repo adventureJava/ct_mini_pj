@@ -1,18 +1,174 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/tags/security">>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+.sidebar {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background: #f4f4f4; /* 배경색 */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    z-index: 1000; /* 다른 요소 위에 표시 */
+}
+input[id="menuicon"] {
+    display: none;
+}
+input[id="menuicon"]+label {
+    display: block;
+    width: 25px;
+    height: 20px;
+    position: fixed;
+    cursor: pointer;
+    top: 42px;
+    left: 60px;
+}
+input[id="menuicon"]+label span {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    border-radius: 30px;
+    background: white;
+    transition: all 0.35s;
+}
+.menu {
+    list-style-type: none;
+    padding: 0;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+</style>
 </head>
 <body>
 <div th:fragment="header(title)" class="top-bar">
+    <style>
+        .top-bar {
+    background-color: #071313;
+    color: #fff;
+    line-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo {
+    margin: 4px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        .sidebar {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: #f4f4f4; /* 배경색 */
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+            z-index: 1000; /* 다른 요소 위에 표시 */
+        }
+        input[id="menuicon"] {
+            display: none;
+        }
+        input[id="menuicon"]+label {
+            display: block;
+            width: 25px;
+            height: 20px;
+            position: fixed;
+            cursor: pointer;
+            top: 42px;
+            left: 60px;
+        }
+        input[id="menuicon"]+label span {
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            border-radius: 30px;
+            background: white;
+            transition: all 0.35s;
+        }
+        input[id="menuicon"]+label span:nth-child(1) {
+    top: 0;
+}
+input[id="menuicon"]+label span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+}
+input[id="menuicon"]+label span:nth-child(3) {
+    bottom: 0;
+}
+        .menu {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
     <img alt="로고" th:src="@{images/mlogo.png}"
          class="logo" th:onclick="|location.href='@{/}'|">
     <h2 th:text="${title}"></h2>
+
+    <!-- 사이드바 토글 스위치 -->
+    <input type="checkbox" id="menuicon">
+    <label for="menuicon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <div class="sidebar">
+        <button class="close-btn">&times;</button>
+        <ul class="menu">
+            <li>
+                <a href="#">Home</a>
+                <ul class="submenul">
+                    <sec:authorize access="isAnonymous()">
+                        <li><a href="${pageContext.request.contextPath}/customer/login">로그인</a></li>
+                    </sec:authorize>
+                </ul>
+            </li>
+            <!-- 추가 메뉴 항목이 필요하다면 여기에 추가 -->
+        </ul>
+    </div>
+    <script>
+        document.getElementById("menuicon").addEventListener("change", function() {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.style.display = this.checked ? "block" : "none"; // 체크된 상태에 따라 사이드바 표시
+        });
+
+        document.querySelector(".close-btn").addEventListener("click", function() {
+            document.getElementById("menuicon").checked = false; // 사이드바 닫기
+            document.querySelector(".sidebar").style.display = "none"; // 사이드바 숨기기
+        });
+    </script>
 </div>
 <div th:fragment="footer" class="footer-bar">
     <img src="images/mlogo.png" class="footer-logo">
-    <span>&copy;ICIA 2023</span>
+    <span>&copy;제작자 박선준 2024</span>
 </div>
+
 </body>
 </html>

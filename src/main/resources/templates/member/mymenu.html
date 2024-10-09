@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<a href="/test/test_board">테스트고르기</a>
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
+
+<a href="test_board">테스트고르기</a>
 </body>
 </html>

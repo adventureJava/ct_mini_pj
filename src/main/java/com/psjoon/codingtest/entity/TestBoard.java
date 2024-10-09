@@ -16,8 +16,7 @@ import java.util.Date;
 public class TestBoard {
     @Id
     @Column(unique = true)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_board_seq")
-    @SequenceGenerator(name = "test_board_seq", sequenceName = "test_board_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tId;
 
     @Column(nullable = false)
@@ -29,9 +28,11 @@ public class TestBoard {
     @Column(nullable = false, length = 4000)
     private String tQuestion;
 
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date tWriteTime;
 
+    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date tUpdateTime;
 }

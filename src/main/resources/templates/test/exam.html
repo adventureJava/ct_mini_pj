@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Test Platform</title>
 </head>
 <body>
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
 <h1>코딩 실전 테스트</h1>
 
 <div id="problem-description">

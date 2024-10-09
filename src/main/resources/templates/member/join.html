@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,7 @@
         margin-bottom: 8px;
     }
     input {
-        width: 100%;
+        width: 95%;
         padding: 10px;
         margin-bottom: 20px;
         border: 1px solid #ccc;
@@ -49,7 +50,7 @@
   </style>
 </head>
 <body>
-
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
 <div class="container">
   <h1>회원가입</h1>
   <form id="signupForm">

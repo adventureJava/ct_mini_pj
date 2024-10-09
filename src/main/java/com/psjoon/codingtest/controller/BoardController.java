@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("test")
+
 public class BoardController {
     @Autowired
     TestBoardService testBoardService;
