@@ -1,5 +1,7 @@
 package com.psjoon.codingtest.entity;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import com.psjoon.codingtest.entity.Authority;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,10 +51,9 @@ public class Member implements UserDetails {
         }
     }
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities.stream()
-                .map(auth -> new org.springframework.security.core.authority.SimpleGrantedAuthority(auth.getAuthorityName()))
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())) // Authority에서 권한 이름 추출 후 변환
                 .collect(Collectors.toSet());
     }
 
