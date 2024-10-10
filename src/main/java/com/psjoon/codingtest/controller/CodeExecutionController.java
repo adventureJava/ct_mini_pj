@@ -3,6 +3,8 @@ package com.psjoon.codingtest.controller;
 import com.psjoon.codingtest.dto.CodeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
@@ -21,6 +23,9 @@ import java.util.regex.Pattern;
 public class CodeExecutionController {
     @PostMapping("/run-code")
     public ResponseEntity<Map<String, String>> runCode(@RequestBody CodeRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        System.out.println(userId);
         String language = request.getLanguage();
         String code = request.getCode();
 
