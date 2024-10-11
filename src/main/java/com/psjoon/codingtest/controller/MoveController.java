@@ -3,6 +3,8 @@ package com.psjoon.codingtest.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+
 @Controller
 public class MoveController {
     @GetMapping("/")
@@ -21,8 +23,8 @@ public class MoveController {
     }
 
     @GetMapping("/mymenu")
-    public String mymenu() {
-        return "member/mymenu";
+    public String mymenu(Principal principal) {
+        return "member/mymenu"; // 성공적으로 인증된 사용자에게 페이지 반환
     }
 
     @GetMapping("/test")

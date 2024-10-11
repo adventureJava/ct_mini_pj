@@ -23,10 +23,7 @@ public class BoardController {
 
     @GetMapping("/test_board")
     public String goTestBoard(@RequestParam(defaultValue = "1") int pageNum, Model model) {
-        int listCnt = 5; // 한 페이지에 표시할 게시글 수
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Member memberId = (Member) authentication.getPrincipal();
-//        System.out.println("ID는 "+memberId.getId());
+        int listCnt = 5; // 한 페이지에 표시할 게시글 수;
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();

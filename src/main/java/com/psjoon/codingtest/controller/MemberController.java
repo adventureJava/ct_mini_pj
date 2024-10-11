@@ -11,7 +11,11 @@ import com.psjoon.codingtest.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,44 +56,34 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberRequest request) {
+    public ResponseEntity<String> login(@RequestBody MemberRequest request, HttpServletResponse response) {
         Member member = request.getMember();
-
         Member loginMember = memberService.login(member);
+
+        System.out.println(loginMember);
 
         if (loginMember != null) {
             String token = jwtTokenProvider.createToken(loginMember.getId(), getRoleFromAuthorities(loginMember));
-
-            // 토큰을 클라이언트에게 반환
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            // JWT 토큰을 HTTP-Only 쿠키에 저장
+            Cookie cookie = new Cookie("Authorization", "Bearer" + token);
+            cookie.setHttpOnly(true); // JavaScript에서 접근할 수 없도록 설정
+            cookie.setMaxAge(60 * 60); // 쿠키 유효 기간 (1시간)
+            cookie.setPath("/"); // 모든 경로에서 쿠키가 전송되도록 설정
+            response.addCookie(cookie);
+            return ResponseEntity.ok("로그인 성공");
         } else {
+            System.out.println("로그인실패");
             // 로그인 실패
             return new ResponseEntity<>("로그인 실패", HttpStatus.UNAUTHORIZED);
         }
     }
 
-    // 권한 추출 메서드
+    // 권한 추출 메서드 (Authority 엔티티에서 authorityName을 추출)
     private String getRoleFromAuthorities(Member member) {
-        return member.getAuthorities().stream()
-                .map(Authority::getAuthorityName) // 각 Authority에서 권한 이름 추출
+        return member.getAuthority().stream()
+                .map(Authority::getAuthorityName) // 각 Authority 엔티티에서 권한 이름을 추출
                 .findFirst()  // 여러 권한이 있을 경우 첫 번째 권한을 선택
                 .orElse("ROLE_USER");  // 기본 값으로 ROLE_USER 반환
     }
 
-    private final String key = "your-secret-key";
-
-    public String createToken(String userId, String role) {
-        Claims claims = Jwts.claims().setSubject(userId); // 사용자 ID 설정
-        claims.put("role", role); // 사용자 역할 설정
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + 3600000); // 토큰 유효 시간: 1시간
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, key) // 서명할 때 사용한 비밀 키
-                .compact();
-    }
 }

@@ -51,10 +51,15 @@ public class Member implements UserDetails {
         }
     }
 
+    public Set<Authority> getAuthority() {
+        return authorities;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())) // Authority에서 권한 이름 추출 후 변환
-                .collect(Collectors.toSet());
+                .map(auth -> new SimpleGrantedAuthority(auth.getAuthorityName()))  // Authority를 GrantedAuthority로 변환
+                .collect(Collectors.toSet());  // Set<GrantedAuthority>로 변환
     }
 
     @Override

@@ -29,21 +29,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/join","/member/join","/", "/login").permitAll()
-//                        .anyRequest().authenticated())
-                        .anyRequest().permitAll()) // 모든 요청을 허용
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/mymenu"))
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true))
+                        .requestMatchers("/join", "/member/join", "/", "/login","/member/login").permitAll() // 인증이 필요 없는 경로
+                        .requestMatchers("/mymenu").hasAuthority("ROLE_USER")
+                        .anyRequest().authenticated()) // 그 외 요청은 인증 필요
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // AuthenticationManager는 직접 설정하지 않음. Spring Security가 처리
                 .userDetailsService(customUserDetailsService);
         http.addFilterBefore(new JwtTokenFilter(jwtTokenProvider, customUserDetailsService),
                 UsernamePasswordAuthenticationFilter.class);
