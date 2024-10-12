@@ -2,6 +2,8 @@ package com.psjoon.codingtest.config.jwtFilter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
@@ -49,6 +51,27 @@ public class JwtTokenProvider {
             System.out.println("토큰 검증 실패: " + e.getMessage());
         }
         return false;
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        // 헤더에서 토큰 추출
+        String bearerToken = request.getHeader("Authorization");
+
+        // 쿠키에서 토큰 추출 (헤더에 토큰이 없을 경우)
+        if (bearerToken == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("Authorization")) {
+                        bearerToken = cookie.getValue();
+                    }
+                }
+            }
+        }
+        if (bearerToken != null && bearerToken.startsWith("Bearer")) {
+            return bearerToken.substring(6); // "Bearer " 이후의 토큰 반환
+        }
+        return null;
     }
 }
 

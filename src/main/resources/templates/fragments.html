@@ -145,9 +145,8 @@ input[id="menuicon"]+label span:nth-child(3) {
             <li>
                 <a href="#">Home</a>
                 <ul class="submenul">
-                    <sec:authorize access="isAnonymous()">
-                        <li><a href="${pageContext.request.contextPath}/customer/login">로그인</a></li>
-                    </sec:authorize>
+                    <!-- 여기에 로그인/로그아웃 메뉴가 동적으로 추가될 예정 -->
+                    <li id="loginMenu"></li>
                 </ul>
             </li>
             <!-- 추가 메뉴 항목이 필요하다면 여기에 추가 -->
@@ -163,6 +162,28 @@ input[id="menuicon"]+label span:nth-child(3) {
             document.getElementById("menuicon").checked = false; // 사이드바 닫기
             document.querySelector(".sidebar").style.display = "none"; // 사이드바 숨기기
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+        const loginMenu = document.getElementById('loginMenu');
+        fetch('/member/status', {
+            method: 'GET',
+            credentials: 'include'  // HttpOnly 쿠키를 포함하여 요청
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.authenticated) {
+                // 로그인된 상태라면 로그아웃 버튼 표시
+                loginMenu.innerHTML = '<a href="/logout">로그아웃</a>';
+            } else {
+                // 비로그인 상태라면 로그인 버튼 표시
+                loginMenu.innerHTML = '<a href="/login">로그인</a>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loginMenu.innerHTML = '<a href="/login">로그인</a>';
+        });
+});
     </script>
 </div>
 <div th:fragment="footer" class="footer-bar">

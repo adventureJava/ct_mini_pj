@@ -12,16 +12,15 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>제목</th>
-            <th>난이도</th>
+            <th>테스트번호</th>
+            <th>작성코드</th>
             <th>작성일</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="board : ${list}"> <td>
-            <a th:href="@{/test(tId=${board.tId})}" th:text="${board.tTitle}"></a>
-        </td>
-            <td th:text="${board.level}"></td>
+        <tr th:each="board : ${list}">
+            <td th:text="${board.testBoard.tId}"></td>
+            <td th:text="${board.code}"></td>
             <td th:text="${#dates.format(board.tWriteTime, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         </tbody>

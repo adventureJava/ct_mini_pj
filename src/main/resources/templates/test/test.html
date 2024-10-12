@@ -12,16 +12,16 @@
 <h1>코딩 테스트</h1>
 
 <div id="problem-description">
-    <h2>문제 설명</h2>
-    <p>여기에 문제 설명이 표시됩니다.</p>
+    <h2 th:text="${board.tId} + '번 문제'"></h2>
+    <p><span th:text="${board.tQuestion}"></span></p>
 </div>
-
+<form id="code-form" action="/testSave" method="POST">
 <div id="code-editor">
     <h2>코드를 입력하세요</h2>
-    <textarea id="code-area" rows="15" cols="100" placeholder="여기에 코드를 작성하세요"></textarea>
+    <textarea id="code-area" name="code" rows="15" cols="100" placeholder="여기에 코드를 작성하세요"></textarea>
     <br><br>
     <label for="language">언어 선택:</label>
-    <select id="language">
+    <select id="language" name="language">
         <option value="python">Python</option>
         <option value="java">Java</option>
     </select>
@@ -31,59 +31,82 @@
     <h2>결과</h2>
     <pre id="execution-result">여기에 결과가 표시됩니다.</pre>
 </div>
-
-<button id="reset-btn">초기화</button>
-<button id="run-btn">코드 실행</button>
-<button id="submit-btn">제출</button>
-
+<input type="hidden" name="tId" th:value="${board.tId}">
+<button type="button" id="reset-btn">초기화</button>
+<button type="button" id="run-btn">코드 실행</button>
+<button type="submit" id="submit-btn">제출</button>
+</form>
 <script>
-    // 초기화 버튼 기능
-    document.getElementById('reset-btn').addEventListener('click', () => {
-        document.getElementById('code-area').value = '';
-        document.getElementById('execution-result').textContent = '';
+    document.getElementById('language').addEventListener('change', function() {
+var language = document.getElementById('language').value;
+var codeArea = document.getElementById('code-area');
+codeArea.value =``;
+
+// 선택된 언어가 Java일 때 기본 Java 코드 삽입
+if (language === 'java') {
+    codeArea.value = `public class Solution {
+public static void main(String[] args) {
+    // 여기에 코드를 작성하세요
+}
+}`;
+} else if (language === 'python') {
+    // 선택된 언어가 Python일 때 기본 Python 코드 삽입
+    codeArea.value = `# 여기에 코드를 작성하세요`;
+}
+});
+// 초기화 버튼 기능
+document.getElementById('reset-btn').addEventListener('click', () => {
+    document.getElementById('code-area').value = '';
+    document.getElementById('execution-result').textContent = '';
+});
+
+// 코드 실행 버튼 기능
+document.getElementById('code-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const code = document.getElementById('code-area').value;
+    const language = document.getElementById('language').value;
+    const tId = [[${board.tId}]];
+    const requestBody = JSON.stringify({ code, language, tId });
+    // AJAX로 서버에 코드 전송
+    fetch('/api/run-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: requestBody,
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('execution-result').textContent = data.result;
     });
+});
 
-    // 코드 실행 버튼 기능
-    document.getElementById('run-btn').addEventListener('click', () => {
-        const code = document.getElementById('code-area').value;
-        const language = document.getElementById('language').value;
-
-        // AJAX로 서버에 코드 전송
-        fetch('/api/run-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code, language }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('execution-result').textContent = data.result;
-        });
-    });
-
-    // 제출 버튼 기능
-    document.getElementById('submit-btn').addEventListener('click', () => {
-        const code = document.getElementById('code-area').value;
-        const language = document.getElementById('language').value;
-
-        // AJAX로 서버에 코드 제출
-        fetch('/api/submit-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code, language }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.correct) {
-                alert('정답입니다!');
-            } else {
-                alert('오답입니다.');
+// 제출 버튼 기능
+document.getElementById('submit-btn').addEventListener('click', () => {
+    const code = document.getElementById('code-area').value;
+    const language = document.getElementById('language').value;
+    const tId = [[${board.tId}]];
+    const tAnswer ="[[${board.tAnswer}]]"
+    // AJAX로 서버에 코드 제출
+    fetch('/api/run-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, language, tId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('execution-result').textContent = data.result;
+        console.log("[[${board.tAnswer}]]");
+        console.log(data.result);
+        if(tAnswer.trim()==data.result.trim()){
+            if(confirm("정답입니다. 제출하시겠습니까?(이미 제출했어도 중복가능)")){
+                 document.getElementById('code-form').submit();
             }
-        });
+        }
     });
+});
 </script>
 </body>
 </html>

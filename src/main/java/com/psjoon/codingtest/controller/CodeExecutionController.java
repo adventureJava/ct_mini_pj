@@ -1,11 +1,17 @@
 package com.psjoon.codingtest.controller;
 
 import com.psjoon.codingtest.dto.CodeRequest;
+import com.psjoon.codingtest.entity.TestBoard;
+import com.psjoon.codingtest.service.TestBoardService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,13 +27,20 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/api")
 public class CodeExecutionController {
+    @Autowired
+    TestBoardService testBoardService;
+
     @PostMapping("/run-code")
     public ResponseEntity<Map<String, String>> runCode(@RequestBody CodeRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        System.out.println(userId);
+
         String language = request.getLanguage();
         String code = request.getCode();
+        Integer tId = request.getTId();
+        System.out.println("오류체크 아이디있니?"+language+tId);
+
+        TestBoard dto = testBoardService.findById(tId);
 
         // 정규식을 사용하여 클래스명 추출 (public class 뒤의 단어)
         Pattern pattern = Pattern.compile("public class\\s+(\\w+)");
@@ -42,8 +55,8 @@ public class CodeExecutionController {
             return ResponseEntity.badRequest().body(Map.of("error", "클래스명을 찾을 수 없습니다."));
         }
 
-        String testLv = "easy_1";  // 난이도 수준
-        String id = "temp";        // 나중에 로그인한 사용자 ID로 변경 예정
+        String testLv = ""+dto.getLevel();  // 난이도 수준
+        String id = userId;        // 로그인한 사용자 ID로 변경 예정
 
         // executeInDocker로 코드, 클래스명, testLv, id 전달
         try {
@@ -55,15 +68,6 @@ public class CodeExecutionController {
         }
     }
 
-    @PostMapping("/submit-code")
-    public ResponseEntity<Map<String, Boolean>> submitCode(@RequestBody CodeRequest request) {
-        // 정답 여부를 판별하는 로직 추가
-        boolean isCorrect = checkAnswer(request.getCode(), request.getLanguage());
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("correct", isCorrect);
-        return ResponseEntity.ok(response);
-    }
 
     private String executeInDocker(String containerName, String code, String className, String testLv, String id) throws IOException, InterruptedException {
         // 파일 경로를 /app/{id}/{testLv}/ 으로 설정
@@ -80,7 +84,7 @@ public class CodeExecutionController {
 
         if (mkdirResult != 0) {
             System.err.println("Error creating directory in Docker container. Process exit code: " + mkdirResult);
-            return "Directory creation failed.";
+            return "죄송합니다. 현재 서버에 문제가 있습니다.";
         }
 
         // 임시 파일로 자바 코드 작성
@@ -128,6 +132,16 @@ public class CodeExecutionController {
         StringBuilder output = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
+            // 'failed'가 포함된 경우
+            if (line.contains("failed")) {
+                output = new StringBuilder("올바른 코드가 아닙니다.");
+                break;
+            }
+
+            // 'successful'이 포함된 줄은 건너뛰기
+            if (line.contains("successful")) {
+                continue;
+            }
             output.append(line).append("\n");
         }
 
@@ -135,7 +149,7 @@ public class CodeExecutionController {
         int resultProcessExitCode = resultProcess.waitFor();
         if (resultProcessExitCode != 0) {
             System.err.println("Error reading result file. Process exit code: " + resultProcessExitCode);
-            return "Error reading result file.";
+            return "코드가 올바르지 않게 작성되었습니다.";
         }
 
         // result.txt 파일 삭제
@@ -179,13 +193,4 @@ public class CodeExecutionController {
         return output.toString();
     }
 
-
-
-
-
-
-    private boolean checkAnswer(String code, String language) {
-        // 제출된 코드를 평가하는 로직
-        return true; // 예시로 항상 정답으로 처리
-    }
 }

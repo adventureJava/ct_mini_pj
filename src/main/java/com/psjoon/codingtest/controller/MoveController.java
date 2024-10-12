@@ -27,10 +27,7 @@ public class MoveController {
         return "member/mymenu"; // 성공적으로 인증된 사용자에게 페이지 반환
     }
 
-    @GetMapping("/test")
-    public String gotest() {
-        return "test/test";
-    }
+
 
     @GetMapping("/exam")
     public String goexam() {

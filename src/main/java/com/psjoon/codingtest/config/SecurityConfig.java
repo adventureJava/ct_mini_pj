@@ -30,8 +30,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/join", "/member/join", "/", "/login","/member/login").permitAll() // 인증이 필요 없는 경로
-                        .requestMatchers("/mymenu").hasAuthority("ROLE_USER")
+                        .requestMatchers("/join", "/member/join", "/", "/login","/member/login","/member/status","/images/**").permitAll() // 인증이 필요 없는 경로
                         .anyRequest().authenticated()) // 그 외 요청은 인증 필요
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

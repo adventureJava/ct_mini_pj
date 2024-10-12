@@ -28,6 +28,9 @@ public class TestBoard {
     @Column(nullable = false, length = 4000)
     private String tQuestion;
 
+    @Column(nullable = false, length = 4000)
+    private String tAnswer;
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date tWriteTime;

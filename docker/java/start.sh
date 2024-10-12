@@ -36,10 +36,13 @@ while true; do
     if javac "$JAVA_FILE"; then
         echo "Compilation successful. Running $CLASS_NAME..."
         # Java 실행 결과를 result.txt에 저장
-        java -cp "$(dirname "$JAVA_FILE")" "$CLASS_NAME" > "$RESULT_FILE" 2>&1
+        if java -cp "$(dirname "$JAVA_FILE")" "$CLASS_NAME" > "$RESULT_FILE" 2>&1; then
+            echo "Execution successful." >> "$RESULT_FILE"
+        else
+            echo "Execution failed." >> "$RESULT_FILE"
+        fi
     else
-        echo "Compilation failed."
-        exit 1
+        echo "Compilation failed." > "$RESULT_FILE"
     fi
 
     # 파일을 처리한 후 삭제

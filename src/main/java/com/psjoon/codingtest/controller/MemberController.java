@@ -1,33 +1,25 @@
 package com.psjoon.codingtest.controller;
 
 
+import com.psjoon.codingtest.config.jwtFilter.JwtTokenFilter;
 import com.psjoon.codingtest.config.jwtFilter.JwtTokenProvider;
-import com.psjoon.codingtest.dto.JwtResponse;
 import com.psjoon.codingtest.dto.MemberRequest;
 import com.psjoon.codingtest.entity.Authority;
 import com.psjoon.codingtest.entity.Member;
 import com.psjoon.codingtest.service.AuthorityService;
+import com.psjoon.codingtest.service.CustomUserDetailsService;
 import com.psjoon.codingtest.service.MemberService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("member")
@@ -41,7 +33,8 @@ public class MemberController {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("/join")
     public ResponseEntity<Member> save(@RequestBody MemberRequest request) {
@@ -84,6 +77,34 @@ public class MemberController {
                 .map(Authority::getAuthorityName) // 각 Authority 엔티티에서 권한 이름을 추출
                 .findFirst()  // 여러 권한이 있을 경우 첫 번째 권한을 선택
                 .orElse("ROLE_USER");  // 기본 값으로 ROLE_USER 반환
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> checkAuthStatus(HttpServletRequest request) {
+        // 요청에서 토큰 추출
+        String token = jwtTokenProvider.resolveToken(request);
+
+        // 응답 데이터 생성
+        Map<String, Object> response = new HashMap<>();
+
+        // 토큰이 존재하고 유효한지 검증
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            String username = jwtTokenProvider.getUsername(token);
+
+            // 인증된 사용자 정보를 가져오기
+            Member member = (Member) customUserDetailsService.loadUserByUsername(username);
+
+            if (member != null) {
+                response.put("authenticated", true);
+                response.put("username", member.getUsername());  // 유저 이름 정보 반환
+                response.put("role", member.getAuthorities());   // 유저 권한 정보 반환
+                return ResponseEntity.ok(response);  // 200 OK와 함께 응답
+            }
+        }
+
+        // 인증되지 않은 경우 응답
+        response.put("authenticated", false);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
 }

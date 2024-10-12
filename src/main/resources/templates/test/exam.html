@@ -36,7 +36,6 @@
 <button id="submit-btn">제출</button>
 
 <script>
-    // 초기화 버튼 기능
     document.getElementById('language').addEventListener('change', function() {
     var language = document.getElementById('language').value;
     var codeArea = document.getElementById('code-area');
@@ -54,7 +53,7 @@
         codeArea.value = `# 여기에 코드를 작성하세요`;
     }
 });
-
+    // 초기화 버튼 기능
     document.getElementById('reset-btn').addEventListener('click', () => {
         document.getElementById('code-area').value = '';
         document.getElementById('execution-result').textContent = '';
