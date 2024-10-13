@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
+<h1>유료상품 목록</h1>
+<h4>실전 코딩 테스트 패키지</h4>
+<a href="product">상세보기</a>
 </body>
 </html>

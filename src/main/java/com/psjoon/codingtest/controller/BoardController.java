@@ -31,11 +31,15 @@ public class BoardController {
     private MemberRepository memberRepository;
 
     @GetMapping("/test_board")
-    public String goTestBoard(@RequestParam(defaultValue = "1") int pageNum, Model model) {
+    public String goTestBoard(@RequestParam(defaultValue = "1") int pageNum,@RequestParam(required = false) String source, Model model) {
         int listCnt = 5; // 한 페이지에 표시할 게시글 수;
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String urlPrefix = "";
+        if ("test".equals(source)) {
+            urlPrefix = "test_board?source=test";
+        } else {
+            urlPrefix = "test_board?source=exam";
+        }
 
         // 페이징 처리된 게시글 목록 가져오기
         List<TestBoard> testBoardList = testBoardService.getTestBoards(pageNum, listCnt);
@@ -43,15 +47,18 @@ public class BoardController {
 
         // 페이징 처리 HTML 생성
         PagingUtil paging = testBoardService.getPaging(pageNum, listCnt);
-        String pageHtml = paging.makePaging();
+        String pageHtml = paging.makePaging(urlPrefix);
         model.addAttribute("paging", pageHtml);
 
-        return "test/test_board"; // 결과를 보여줄 뷰
+        if ("test".equals(source)) {
+            return "test/test_board";
+        } else {
+            return "test/exam_board";
+        }
     }
 
     @GetMapping("/test")
     public String gotest(@RequestParam("tId") Integer tId, Model model) {
-        System.out.println("테스트로 이동");
         TestBoard dto = testBoardService.findById(tId);
         model.addAttribute("board", dto);
         return "test/test";
@@ -89,6 +96,7 @@ public class BoardController {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
+        String urlPrefix = "testRecord";
 
         int listCnt = 5; // 한 페이지에 표시할 게시글 수;
 
@@ -98,10 +106,20 @@ public class BoardController {
 
         // 페이징 처리 HTML 생성
         PagingUtil paging = testRecordService.getPaging(pageNum, listCnt,userId);
-        String pageHtml = paging.makePaging();
+        String pageHtml = paging.makePaging(urlPrefix);
         model.addAttribute("paging", pageHtml);
 
         return "test/test_Record"; // 결과를 보여줄 뷰
+    }
+
+    @GetMapping("/exam")
+    public String goexam(@RequestParam("tId") Integer tId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        model.addAttribute("userId", userId);
+        TestBoard dto = testBoardService.findById(tId);
+        model.addAttribute("board", dto);
+        return "test/exam";
     }
 
 }

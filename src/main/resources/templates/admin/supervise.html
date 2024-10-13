@@ -1,28 +1,63 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>감독 페이지</title>
 </head>
 <body>
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
 <h1>코딩 테스트 감독 페이지</h1>
-
-<div id="code-display">
-  <h2>시험자의 코드</h2>
-  <textarea id="code-area" rows="15" cols="100" readonly></textarea>
-</div>
+<div id="code-display"></div>
 
 <script>
   // WebSocket 연결 생성
-  const socket = new WebSocket('ws://localhostuy:8080/ws/code'); // URL 조정 필요
+  const socket = new WebSocket('ws://192.168.219.100:8080/ws/code');
 
-  // 수신된 메시지 처리 (시험자에게서의 코드 업데이트)
+  // 유저 목록을 수신하고 textarea 생성
   socket.addEventListener('message', (event) => {
       const data = JSON.parse(event.data);
-      // 감독 페이지에서 코드 업데이트 표시
-      document.getElementById('code-area').value = data.code;
+      const userId = data.userId;
+      const code = data.code;
+
+      if (!document.getElementById('textarea-' + userId)) {
+          // 접속 중인 유저들에 대해 각각의 textarea 생성
+          createUserTextArea(userId);
+
+      }
+
+          // 해당 유저의 textarea에 코드 업데이트
+          let userCodeArea = document.getElementById('textarea-' + userId);
+          if (userCodeArea) {
+              userCodeArea.value = code;
+          }
   });
+
+  // 새로운 textarea를 생성하는 함수
+  function createUserTextArea(userId) {
+      const codeDisplay = document.getElementById('code-display');
+
+      // 새로운 div 생성
+      const newCodeDiv = document.createElement('div');
+
+      // h2 생성
+      const userHeading = document.createElement('h2');
+      userHeading.textContent = userId + "의 코드";
+
+      // textarea 생성
+      const userTextArea = document.createElement('textarea');
+      userTextArea.id = 'textarea-' + userId;
+      userTextArea.rows = 15;
+      userTextArea.cols = 100;
+      userTextArea.readOnly = true;
+
+      // 생성한 요소들을 div에 추가
+      newCodeDiv.appendChild(userHeading);
+      newCodeDiv.appendChild(userTextArea);
+
+      // code-display에 새로 만든 div 추가
+      codeDisplay.appendChild(newCodeDiv);
+  }
 </script>
 </body>
 </html>

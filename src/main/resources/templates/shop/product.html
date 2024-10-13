@@ -16,28 +16,41 @@
             IMP.request_pay({
                 pg: "html5_inicis",
                 pay_method: "card",
-                merchant_uid: $("#buyerName").val() + new Date().getTime(),   // 주문번호
+                merchant_uid: "[[${userId}]]" + new Date().getTime(),   // 주문번호
                 name: "실전 코딩 테스트",
                 amount: 100,                         // 숫자 타입
-                buyer_email: "gildong@gmail.com",
-                buyer_name: "홍길동"
+                phone: "[[${member.phone}]]",
+                buyer_name: "[[${member.nickname}]]"
             }, function (rsp) { // callback
+            if (rsp.success) {
                 $.ajax({
                    type: 'POST',
-                   url: '/verify/' + rsp.imp_uid
+                   url: 'verify/' + rsp.imp_uid
                 }).done(function(data) {
-                    if(rsp.paid_amount === data.response.amount){
+                    console.log(data);  // data의 구조를 확인
+                    console.log("결제 완료 금액 (rsp.paid_amount):", rsp.paid_amount);
+                    if(parseFloat(rsp.paid_amount) === parseFloat(data.amount)){
                         alert("결제 성공");
                     } else {
                         alert("결제 실패");
                     }
-                });
+                }).fail(function(error) {
+                alert("서버 오류 발생: " + error.responseText);
+            });
+        } else {
+            // 결제가 실패하거나 사용자가 창을 닫았을 경우
+            alert("결제 실패: " + rsp.error_msg);
+        }
             });
         }
 
     </script>
 </head>
 <body>
+<th:block th:insert="~{fragments::header('마스터코딩')}"></th:block>
+<h1>실전 코딩테스트 패키지</h1>
+매일 12시~14시 실전 코딩테스트 제공<br>
+피드백 제공<br>
 <button onclick="requestPay()">결제하기</button>
 </body>
 </html>

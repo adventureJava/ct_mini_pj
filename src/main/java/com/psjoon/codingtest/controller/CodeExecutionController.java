@@ -38,7 +38,6 @@ public class CodeExecutionController {
         String language = request.getLanguage();
         String code = request.getCode();
         Integer tId = request.getTId();
-        System.out.println("오류체크 아이디있니?"+language+tId);
 
         TestBoard dto = testBoardService.findById(tId);
 
