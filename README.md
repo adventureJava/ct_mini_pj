@@ -1,4 +1,4 @@
-Spring boot를 활용한 코딩 테스트 웹개발 프로젝트 입니다.
+Spring boot를 활용한 코딩 테스트 웹개발 미니 프로젝트 입니다.
 
 주요기능
 1. Spring Security jwt토큰 인증을 통한 로그인, 페이지 이동
