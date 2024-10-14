@@ -107,7 +107,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 });
 
      // WebSocket 연결 생성
-    const socket = new WebSocket('ws://192.168.219.100:8080das/ws/code'); // URL 조정 필요
+    const socket = new WebSocket('ws://192.168.219.100:8080/ws/code'); // URL 조정 필요
 
     // 코드 업데이트를 WebSocket 서버로 전송
     document.getElementById('code-area').addEventListener('input', () => {
