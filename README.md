@@ -11,6 +11,7 @@ Spring boot를 활용한 코딩 테스트 웹개발 프로젝트 입니다.
 ![jwt](https://github.com/user-attachments/assets/22094dcf-e2af-485c-b7a8-21d2c457c277)
 -사용자가 로그인하면, 서버는 사용자 ID와 권한 정보를 기반으로 JWT를 생성합니다.
  이 토큰은 Authorization이라는 이름의 HTTP-Only 쿠키에 저장되어, JavaScript에서 접근할 수 없도록 설정하여 XSS 공격을 예방합니다.
+
 -JWT를 기반으로 한 인증 시스템을 통해 사용자가 인증된 경우에만 특정 페이지에 접근할 수 있도록 설정하였습니다. 
  이를 통해 민감한 데이터 보호 및 사용자 경험을 개선했습니다.
 
