@@ -28,6 +28,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken(request);
+
+        // 요청 경로가 /error/**인 경우는 필터 처리를 생략
+        if (request.getRequestURI().startsWith("/error/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // 허용된 경로 리스트
+        String[] permittedPaths = {"/join", "/ws/", "/member/join", "/", "/login", "/member/login", "/member/status", "/images/"};
+
+        // 허용된 경로인지 체크
+        for (String path : permittedPaths) {
+            if (request.getRequestURI().matches(path)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         if (token != null && jwtTokenProvider.validateToken(token) &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtTokenProvider.getUsername(token);
@@ -43,7 +60,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // 디버깅용 로그 추가
                 System.out.println("인증 성공: " + username);
             }
-        }else{System.out.println("인증 실패 또는 토큰 없음");}
+        }else{
+            System.out.println("인증 실패 또는 토큰 없음");
+            response.sendRedirect("/error/403");
+            return;
+        }
         filterChain.doFilter(request, response);
     }
 
