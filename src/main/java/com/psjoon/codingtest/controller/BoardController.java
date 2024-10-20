@@ -1,11 +1,10 @@
 package com.psjoon.codingtest.controller;
 
-import com.psjoon.codingtest.dto.CodeRequest;
 import com.psjoon.codingtest.entity.Member;
 import com.psjoon.codingtest.entity.TestBoard;
 import com.psjoon.codingtest.entity.TestRecord;
 import com.psjoon.codingtest.repository.MemberRepository;
-import com.psjoon.codingtest.service.MemberService;
+import com.psjoon.codingtest.repository.TestBoardRepository;
 import com.psjoon.codingtest.service.TestBoardService;
 import com.psjoon.codingtest.service.TestRecordService;
 import com.psjoon.codingtest.util.PagingUtil;
@@ -29,6 +28,9 @@ public class BoardController {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TestBoardRepository testBoardRepository;
 
     @GetMapping("/test_board")
     public String goTestBoard(@RequestParam(defaultValue = "1") int pageNum,@RequestParam(required = false) String source, Model model) {
@@ -120,6 +122,25 @@ public class BoardController {
         TestBoard dto = testBoardService.findById(tId);
         model.addAttribute("board", dto);
         return "test/exam";
+    }
+
+    @PostMapping("/test_register")
+    public String test_register(TestBoard board) {
+        testBoardRepository.save(board);
+        return "redirect:test/test_board";
+    }
+
+    @GetMapping("/test_modify")
+    public String go_test_modify(@RequestParam("tId") Integer tId, Model model) {
+        TestBoard dto = testBoardService.findById(tId);
+        model.addAttribute("board", dto);
+        return "test/test_modify";
+    }
+
+    @PostMapping("/test_modify")
+    public String test_modify(TestBoard board) {
+        testBoardRepository.save(board);
+        return "redirect:test/test_board";
     }
 
 }
