@@ -174,6 +174,11 @@ input[id="menuicon"]+label span:nth-child(3) {
             if (data.authenticated) {
                 // 로그인된 상태라면 로그아웃 버튼 표시
                 loginMenu.innerHTML = '<a href="/logout">로그아웃</a>';
+                if(document.getElementById('newbtn')){
+                    if(data.role ==="ROLE_ADMIN"){
+                        newbtn.innerHTML = '<a href="test_register">새 글</a>';
+                    }
+                }
             } else {
                 // 비로그인 상태라면 로그인 버튼 표시
                 loginMenu.innerHTML = '<a href="/login">로그인</a>';

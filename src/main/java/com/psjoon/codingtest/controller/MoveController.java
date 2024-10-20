@@ -37,7 +37,9 @@ public class MoveController {
     public String examsupervise() {
         return "admin/supervise";
     }
-
+    @GetMapping("/test_register")
+    public String test_register(Principal principal) {
+        return "test/test_register";}
 
 
 }

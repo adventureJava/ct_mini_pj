@@ -95,9 +95,10 @@ public class MemberController {
             Member member = (Member) customUserDetailsService.loadUserByUsername(username);
 
             if (member != null) {
+                System.out.println(getRoleFromAuthorities(member));
                 response.put("authenticated", true);
                 response.put("username", member.getUsername());  // 유저 이름 정보 반환
-                response.put("role", member.getAuthorities());   // 유저 권한 정보 반환
+                response.put("role", getRoleFromAuthorities(member));   // 유저 권한 정보 반환
                 return ResponseEntity.ok(response);  // 200 OK와 함께 응답
             }
         }
