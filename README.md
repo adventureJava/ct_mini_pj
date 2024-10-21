@@ -1,6 +1,6 @@
-<h1>Spring boot를 활용한 코딩 테스트 웹개발 미니 프로젝트 입니다.</h1>
+<h1>Spring boot를 활용한 코딩 테스트 웹개발 미니 프로젝트</h1> <br>
 
-<h2>주요기능</h2>
+<h2>주요기능</h2> <br>
 1. Spring Security jwt토큰 인증을 통한 로그인, 페이지 이동 <br>
 2. docker 컨테이너를 활용한 자바 코딩테스트 <br>
 3. 웹소켓을 활용해 시험자의 코드를 실시간으로 볼 수 있는 실전 코딩 테스트 감독 모드 지원 <br>
@@ -8,6 +8,7 @@
 
 
 <h3>1. Spring Security jwt토큰 인증을 통한 로그인, 페이지 이동</h3>
+
 ![jwt](https://github.com/user-attachments/assets/22094dcf-e2af-485c-b7a8-21d2c457c277) <br>
 -사용자가 로그인하면, 서버는 사용자 ID와 권한 정보를 기반으로 JWT를 생성합니다.
  이 토큰은 Authorization이라는 이름의 HTTP-Only 쿠키에 저장되어, JavaScript에서 접근할 수 없도록 설정하여 XSS 공격을 예방합니다.
@@ -17,6 +18,7 @@
 
 
 <h3>2. docker 컨테이너를 활용한 자바 코딩테스트</h3>
+
 ![test](https://github.com/user-attachments/assets/782c14cc-6693-4c25-a1d6-20afc3263445) <br>
 Docker를 활용하여 안전하고 효율적인 코딩 테스트 환경을 구축했습니다.
 사용자가 제출한 Java 코드를 Docker 컨테이너에서 실행하고, 그 결과를 실시간으로 반환하는 시스템입니다.
@@ -35,6 +37,7 @@ Docker를 활용하여 안전하고 효율적인 코딩 테스트 환경을 구�
 
 
 <h3>3. 웹소켓을 활용한 실시간 코딩 테스트 감독 시스템</h3>
+
 ![supervise](https://github.com/user-attachments/assets/05c7c1a6-6578-49aa-bf09-2a424264329b) <br>
 AJAX와 WebSocket 기술을 활용하여 여러 명의 수험생이 동시에 코딩 테스트를 진행하는 상황에서, 감독자가 각 수험생의 코드를 실시간으로 확인할 수 있는 웹 기반 시스템을 구축했습니다.
 
@@ -49,6 +52,7 @@ AJAX와 WebSocket 기술을 활용하여 여러 명의 수험생이 동시에 �
 
 
 <h3>4. 포트원 아임포트 결제 모듈을 이용한 결제 시스템</h3>
+
 ![portone](https://github.com/user-attachments/assets/13af3280-cac3-4827-bcd7-f62834d3ebc4) <br>
 
 테스트로 만들어 본 결제모듈 입니다. 현재 구매내역을 DB에 저장하는 로직으로 만들었고 차후에 구매시 실전 코딩테스트 페이지를 일정기간동안 이용할 수 있게 구현을 할 예정입니다.
