@@ -127,7 +127,7 @@ input[id="menuicon"]+label span:nth-child(3) {
             cursor: pointer;
         }
     </style>
-    <img alt="로고" th:src="@{images/mlogo.png}"
+    <img alt="로고" th:src="@{/images/mlogo.png}"
          class="logo" th:onclick="|location.href='@{/}'|">
     <h2 th:text="${title}"></h2>
 
@@ -192,7 +192,15 @@ input[id="menuicon"]+label span:nth-child(3) {
     </script>
 </div>
 <div th:fragment="footer" class="footer-bar">
-    <img src="images/mlogo.png" class="footer-logo">
+    <style>
+        .footer-logo {
+    margin: 4px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+    </style>
+    <img src="/images/mlogo.png" class="footer-logo">
     <span>&copy;제작자 adventureJava</span>
 </div>
 

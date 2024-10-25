@@ -35,6 +35,7 @@
 <button type="button" id="run-btn">코드 실행</button>
 <button type="submit" id="submit-btn">제출</button>
 </form>
+<th:block th:insert="~{fragments::footer}"></th:block>
 <script>
     document.getElementById('language').addEventListener('change', function() {
 var language = document.getElementById('language').value;

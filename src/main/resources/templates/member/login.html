@@ -68,7 +68,7 @@
     <button type="button" id="join">회원가입</button>
 
 </div>
-
+<th:block th:insert="~{fragments::footer}"></th:block>
 <script>
     document.getElementById("join").addEventListener("click", function() {
         window.location.href = "join";

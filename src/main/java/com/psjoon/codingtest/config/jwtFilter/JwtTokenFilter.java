@@ -39,7 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // 허용된 경로인지 체크
         for (String path : permittedPaths) {
-            if (request.getRequestURI().matches(path)) {
+            if (request.getRequestURI().matches(path.replace("**", ".*"))) {
                 filterChain.doFilter(request, response);
                 return;
             }
